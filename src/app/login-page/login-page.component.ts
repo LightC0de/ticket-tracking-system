@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {User} from '../shared/interfaces';
 import {AuthService} from '../shared/services/auth.service';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
@@ -11,15 +11,24 @@ import {Router} from '@angular/router';
 })
 export class LoginPageComponent implements OnInit {
 
-  form: FormGroup;
+  public form: FormGroup;
   public submitted = false;
+  public message: string;
 
   constructor(
     public auth: AuthService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
 
   public ngOnInit(): void {
+    this.route.queryParams.subscribe((params) => {
+      const key = 'loginAgain';
+      if (params[key]) {
+        this.message = 'Please, enter your credentials';
+      }
+    });
+
     this.form = new FormGroup({
       login: new FormControl(null, [
         Validators.required

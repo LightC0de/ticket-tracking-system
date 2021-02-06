@@ -6,16 +6,17 @@ import {LoginPageComponent} from './login-page/login-page.component';
 import {CreatePageComponent} from './create-page/create-page.component';
 import {EditPageComponent} from './edit-page/edit-page.component';
 import {TicketPageComponent} from './ticket-page/ticket-page.component';
+import {AuthGuard} from './shared/services/auth.guard';
 
 const routes: Routes = [
   {
     path: '', component: MainLayoutComponent, children: [
       {path: '', redirectTo: '/login', pathMatch: 'full'},
       {path: 'login', component: LoginPageComponent},
-      {path: 'dashboard', component: DashboardPageComponent},
-      {path: 'create', component: CreatePageComponent},
-      {path: 'ticket/:id', component: TicketPageComponent},
-      {path: 'ticket/:id/edit', component: EditPageComponent},
+      {path: 'dashboard', component: DashboardPageComponent, canActivate: [AuthGuard]},
+      {path: 'create', component: CreatePageComponent, canActivate: [AuthGuard]},
+      {path: 'ticket/:id', component: TicketPageComponent, canActivate: [AuthGuard]},
+      {path: 'ticket/:id/edit', component: EditPageComponent, canActivate: [AuthGuard]}
     ]
   }
 ];
