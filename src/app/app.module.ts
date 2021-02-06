@@ -12,6 +12,7 @@ import { TicketComponent } from './shared/components/ticket/ticket.component';
 import { TicketPageComponent } from './ticket-page/ticket-page.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
+import {INTERCEPTOR_PROVIDER} from './shared/services/fake-backend.interceptor';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,7 @@ import {HttpClientModule} from '@angular/common/http';
     ReactiveFormsModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [INTERCEPTOR_PROVIDER],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

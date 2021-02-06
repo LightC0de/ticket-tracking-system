@@ -4,6 +4,6 @@ export interface User {
 }
 
 export interface AuthResponse {
-  idToken: string;
-  idUser: string;
+  tokenId: string;
+  userId: string;
 }
