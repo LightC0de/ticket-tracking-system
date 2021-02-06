@@ -1,0 +1,19 @@
+.ticket {
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  h1 {
+    margin-bottom: .5rem;
+  }
+
+  .info {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: .5rem;
+  }
+
+}
