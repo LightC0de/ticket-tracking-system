@@ -14,8 +14,8 @@ export class MainLayoutComponent implements OnInit {
   }
 
   public logout(event: Event): void {
-    event.preventDefault()
-    this.router.navigate(['/', 'login'])
+    event.preventDefault();
+    this.router.navigate(['/', 'login']);
   }
 
 }

@@ -1,1 +1,48 @@
-<p>login-page works!</p>
+<form class="card" [formGroup]="form" (ngSubmit)="submit()">
+  <h2>Log in</h2>
+
+  <div
+    class="form-control"
+    [ngClass]="{invalid: form.get('login').touched && form.get('login').invalid}"
+  >
+    <label for="login">Login:</label>
+    <input id="login" type="text" formControlName="login">
+    <div
+      *ngIf="form.get('login').touched && form.get('login').invalid"
+      class="validation"
+    >
+      <small *ngIf="form.get('login').errors.required">
+        Login is required field
+      </small>
+    </div>
+  </div>
+
+  <div
+    class="form-control"
+    [ngClass]="{invalid: form.get('password').touched && form.get('password').invalid}"
+  >
+    <label for="password">Password:</label>
+    <input id="password" type="password" formControlName="password">
+    <div
+      class="validation"
+      *ngIf="form.get('password').touched && form.get('password').invalid"
+    >
+      <small *ngIf="form.get('password').errors.required">
+        Password is required field
+      </small>
+      <small *ngIf="form.get('password').errors.minlength">
+        Password must be minimum
+        {{form.get('password').errors.minlength.requiredLength}}
+        letter. Now
+        {{form.get('password').errors.minlength.actualLength}}
+        letter.
+      </small>
+    </div>
+  </div>
+
+  <button
+    type="submit"
+    class="btn btn-primary"
+    [disabled]="form.invalid"
+  >Log in</button>
+</form>
