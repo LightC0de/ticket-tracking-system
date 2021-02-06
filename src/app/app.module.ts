@@ -11,6 +11,7 @@ import { EditPageComponent } from './edit-page/edit-page.component';
 import { TicketComponent } from './shared/components/ticket/ticket.component';
 import { TicketPageComponent } from './ticket-page/ticket-page.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
