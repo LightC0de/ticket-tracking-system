@@ -11,7 +11,7 @@
       <a [routerLink]="['/', 'create']">Create</a>
     </li>
     <li>
-      <a href="#" (click)="logout($event)">Log out</a>
+      {{userName}} |<a href="#" (click)="logout($event)">Log out</a>
     </li>
   </ul>
 </nav>

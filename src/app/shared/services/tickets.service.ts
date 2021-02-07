@@ -18,8 +18,8 @@ export class TicketsService {
     private router: Router
   ) { }
 
-  public getTicket(reqTicketId: string): Observable<any> {
-    return this.http.get('/ticket', {params: {ticketId: reqTicketId}});
+  public getTicket(ticketId: string): Observable<any> {
+    return this.http.get('/ticket', {params: {ticketId}});
   }
 
   public getAll(userId: string): Observable<Ticket[]> {
@@ -47,12 +47,17 @@ export class TicketsService {
       );
   }
 
-  public delete(reqTicketId: string): Observable<{ ticketId: string }> {
-    return this.http.delete<{ ticketId: string }>('/ticket', {params: {ticketId: reqTicketId}});
+  public delete(ticketId: string): Observable<{ ticketId: string }> {
+    return this.http.delete<{ ticketId: string }>('/ticket', {
+      params: {
+        ticketId,
+        userId: localStorage.getItem('user-id')
+      }
+    });
   }
 
-  public close(reqTicketId: string): Observable<{ ticketId: string }> {
-    const body = { ticketId: reqTicketId, isActionClose: true };
+  public close(ticketId: string, isActionClose: boolean): Observable<{ ticketId: string }> {
+    const body = { ticketId, isActionClose, userId: localStorage.getItem('user-id') };
     return this.http.put<{ ticketId: string }>('/ticket', body);
   }
 

@@ -1,4 +1,4 @@
-<div class="card">
+<div [ngClass]="{closed:ticket.isClosed}" class="card">
   <div class="card-header">
     <h2>{{ticket.title}}</h2>
   </div>
@@ -11,5 +11,5 @@
   <button
     [routerLink]="['/ticket', ticket.id]"
     class="btn btn-dark"
-  >Open</button>
+  >Details</button>
 </div>

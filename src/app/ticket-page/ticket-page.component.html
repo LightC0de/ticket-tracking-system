@@ -19,7 +19,7 @@
         *ngIf="!isClosed"
       >Close ticket</button>
       <button
-        (click)="close()"
+        (click)="close(false)"
         class="btn btn-dark"
         [disabled]="submitted"
         *ngIf="isClosed"

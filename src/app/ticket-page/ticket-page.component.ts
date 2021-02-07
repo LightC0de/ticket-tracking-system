@@ -42,9 +42,9 @@ export class TicketPageComponent implements OnInit {
     });
   }
 
-  public close(): void {
+  public close(isActionClose: boolean = true): void {
     this.submitted = true;
-    this.ticketsService.close(this.ticketId).subscribe((res) => {
+    this.ticketsService.close(this.ticketId, isActionClose).subscribe((res) => {
       console.log(res);
       this.router.navigate(['/', 'dashboard']);
       this.submitted = false;

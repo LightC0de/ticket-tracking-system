@@ -9,12 +9,15 @@ import {AuthService} from '../../services/auth.service';
 })
 export class MainLayoutComponent implements OnInit {
 
+  public userName: string;
+
   constructor(
     private router: Router,
     public auth: AuthService
   ) { }
 
   ngOnInit(): void {
+    this.userName = localStorage.getItem('user-id');
   }
 
   public logout(event: Event): void {
