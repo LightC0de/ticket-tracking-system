@@ -1,7 +1,28 @@
-<div class="tickets">
-  <app-ticket></app-ticket>
-  <app-ticket></app-ticket>
-  <app-ticket></app-ticket>
-  <app-ticket></app-ticket>
-  <app-ticket></app-ticket>
+<div class="row">
+  <div class="tickets">
+    <h2>Tickets, where I'm assignee</h2>
+
+    <ng-container *ngFor="let ticket of ticketsImAssignee">
+      <app-ticket
+        [id]="ticket.id"
+        [title]="ticket.title"
+        [assignee]="ticket.assignee"
+        [reporter]="ticket.reporter"
+      ></app-ticket>
+    </ng-container>
+  </div>
+
+  <div class="tickets">
+    <h2>Tickets, where I'm reporter</h2>
+
+    <ng-container *ngFor="let ticket of ticketsImReporter">
+      <app-ticket
+        [id]="ticket.id"
+        [title]="ticket.title"
+        [assignee]="ticket.assignee"
+        [reporter]="ticket.reporter"
+      ></app-ticket>
+    </ng-container>
+  </div>
 </div>
+

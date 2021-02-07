@@ -2,7 +2,7 @@ import {HTTP_INTERCEPTORS, HttpEvent, HttpHandler, HttpInterceptor, HttpParams, 
 import {Observable, of, throwError} from 'rxjs';
 import {Injectable, Provider} from '@angular/core';
 import {delay, dematerialize, materialize, mergeMap} from 'rxjs/operators';
-import {AuthResponse, CreateResponse} from '../interfaces';
+import {AuthResponse, CreateResponse, Ticket} from '../interfaces';
 
 @Injectable()
 class FakeBackendInterceptor implements HttpInterceptor {
@@ -22,7 +22,7 @@ class FakeBackendInterceptor implements HttpInterceptor {
         case url.endsWith('/login') && method === 'POST':
           return authenticate();
         case url.endsWith('/tickets') && method === 'GET':
-          return getTickets();
+          return getTickets(params);
         case url.endsWith('/ticket') && method === 'POST':
           return createTicket(params);
         case url.endsWith('/ticket') && method === 'PUT':
@@ -50,8 +50,42 @@ class FakeBackendInterceptor implements HttpInterceptor {
       });
     }
 
-    function getTickets(): Observable<HttpResponse<any>> {
-      return ok();
+    function getTickets(reqParams: HttpParams): Observable<HttpResponse<Ticket[]>> {
+      const isCorrectUserId = reqParams.get('userId').toString() === 'danil';
+      if (!isCorrectUserId) {
+        return error('Incorrect user id');
+      }
+
+      return ok([
+        {
+          id: 1,
+          title: 'Check this app',
+          assignee: 'danil',
+          reporter: 'Bob',
+          description: '<p>Hello world!</p><p><b>test</b></p>'
+        },
+        {
+          id: 2,
+          title: 'Problem user from USA',
+          assignee: 'Bob',
+          reporter: 'danil',
+          description: '<p>Problem with local ethernet!</p><p><b>=(</b></p>'
+        },
+        {
+          id: 3,
+          title: 'Test ticket 1',
+          assignee: 'Bob',
+          reporter: 'danil',
+          description: '<p>Problem with local ethernet!</p><p><b>=(</b></p>'
+        },
+        {
+          id: 4,
+          title: 'Test ticket 2',
+          assignee: 'danil',
+          reporter: 'Cat',
+          description: '<p>I\'m Cat!</p><p><b>mrr</b></p>'
+        }
+      ]);
     }
 
     function createTicket(reqParams: HttpParams): Observable<HttpResponse<CreateResponse>> {

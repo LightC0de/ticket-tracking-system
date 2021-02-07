@@ -1,4 +1,7 @@
-.tickets {
-  max-width: 600px;
-  margin: 0 auto;
+.row {
+  display: flex;
+  .tickets {
+    flex-grow: 1;
+    margin: 0 5px;
+  }
 }

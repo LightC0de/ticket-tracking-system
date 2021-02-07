@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {Observable, Subject, throwError} from 'rxjs';
 import {CreateResponse, Ticket} from '../interfaces';
 import {catchError, map} from 'rxjs/operators';
+import {Router} from '@angular/router';
 
 @Injectable(
   {
@@ -12,7 +13,23 @@ import {catchError, map} from 'rxjs/operators';
 export class TicketsService {
   public error$: Subject<string> = new Subject<string>();
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) { }
+
+  public getAll(userId: string): Observable<Ticket[]> {
+    if (!userId) {
+      this.router.navigate(['/', 'login']);
+      return throwError('UserId isn\'t found');
+    }
+
+    const reqParams = new HttpParams().set('userId', userId);
+    return this.http.get<Ticket[]>(`/tickets`, {params: reqParams})
+      .pipe(
+        catchError(this.handleError.bind(this))
+      );
+  }
 
   public create(ticket: Ticket): Observable<Ticket> {
     return this.http.post('/ticket', ticket)

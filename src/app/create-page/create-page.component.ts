@@ -30,6 +30,7 @@ export class CreatePageComponent implements OnInit {
     const ticket: Ticket = {
       title: this.form.value.title,
       assignee: this.form.value.assignee,
+      reporter: localStorage.getItem('user-id'),
       description: this.form.value.description
     };
 
