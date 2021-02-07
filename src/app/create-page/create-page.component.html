@@ -1,1 +1,62 @@
-<p>create-page works!</p>
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <h1>Create new ticket</h1>
+
+  <div
+    class="form-control"
+    [ngClass]="{invalid: form.get('title').touched && form.get('title').invalid}"
+  >
+    <label for="title">Title ticket:</label>
+    <input id="title" type="text" formControlName="title">
+    <div
+      *ngIf="form.get('title').touched && form.get('title').invalid"
+      class="validation"
+    >
+      <small *ngIf="form.get('title').errors.required">
+        Title is required field
+      </small>
+    </div>
+  </div>
+
+  <div
+    class="form-control"
+    [ngClass]="{invalid: form.get('assignee').touched && form.get('assignee').invalid}"
+  >
+    <label for="assignee">Assignee:</label>
+    <select id="assignee" formControlName="assignee">
+      <option value="Danil">Danil</option>
+      <option value="Bob">Bob</option>
+      <option value="admin">admin</option>
+    </select>
+
+    <div
+      *ngIf="form.get('assignee').touched && form.get('assignee').invalid"
+      class="validation"
+    >
+      <small *ngIf="form.get('assignee').errors.required">
+        Field "Assignee" is required
+      </small>
+    </div>
+  </div>
+
+  <div
+    class="form-control"
+    [ngClass]="{invalid: form.get('description').touched && form.get('description').invalid}"
+  >
+    <label>Description ticket:</label>
+    <quill-editor formControlName="description"></quill-editor>
+    <div
+      *ngIf="form.get('description').touched && form.get('description').invalid"
+      class="validation"
+    >
+      <small *ngIf="form.get('description').errors.required">
+        Description is required field
+      </small>
+    </div>
+  </div>
+
+  <button
+    type="submit"
+    class="btn btn-block btn-dark"
+    [disabled]="form.invalid"
+  >Create ticket</button>
+</form>

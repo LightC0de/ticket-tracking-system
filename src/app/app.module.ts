@@ -13,6 +13,7 @@ import { TicketPageComponent } from './ticket-page/ticket-page.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {INTERCEPTOR_PROVIDER} from './shared/services/fake-backend.interceptor';
+import {QuillModule} from 'ngx-quill';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import {INTERCEPTOR_PROVIDER} from './shared/services/fake-backend.interceptor';
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    QuillModule.forRoot()
   ],
   providers: [INTERCEPTOR_PROVIDER],
   bootstrap: [AppComponent]
