@@ -23,12 +23,14 @@ class FakeBackendInterceptor implements HttpInterceptor {
           return authenticate();
         case url.endsWith('/tickets') && method === 'GET':
           return getTickets(params);
+        case url.endsWith('/ticket') && method === 'GET':
+          return getTicket(params);
         case url.endsWith('/ticket') && method === 'POST':
           return createTicket(params);
         case url.endsWith('/ticket') && method === 'PUT':
-          return closeTicket();
+          return closeTicket(body);
         case url.endsWith('/ticket') && method === 'DELETE':
-          return deleteTicket();
+          return deleteTicket(params);
         default:
           // pass through any requests not handled above
           return next.handle(request);
@@ -46,7 +48,8 @@ class FakeBackendInterceptor implements HttpInterceptor {
       }
       return ok({
         tokenId: 'fake-jwt-token',
-        userId: 'danil'
+        userId: 'danil',
+        isAdmin: 'true'
       });
     }
 
@@ -56,36 +59,86 @@ class FakeBackendInterceptor implements HttpInterceptor {
         return error('Incorrect user id');
       }
 
-      return ok([
+      return ok<Ticket[]>([
         {
           id: 1,
           title: 'Check this app',
           assignee: 'danil',
           reporter: 'Bob',
-          description: '<p>Hello world!</p><p><b>test</b></p>'
-        },
+          description: '<p>Hello world!</p><p><b>test</b></p>',
+          isClosed: false
+        } as Ticket,
         {
           id: 2,
           title: 'Problem user from USA',
           assignee: 'Bob',
           reporter: 'danil',
-          description: '<p>Problem with local ethernet!</p><p><b>=(</b></p>'
-        },
+          description: '<p>Problem with local ethernet!</p><p><b>=(</b></p>',
+          isClosed: true
+        } as Ticket,
         {
           id: 3,
           title: 'Test ticket 1',
           assignee: 'Bob',
           reporter: 'danil',
-          description: '<p>Problem with local ethernet!</p><p><b>=(</b></p>'
-        },
+          description: '<p>Problem with local ethernet!</p><p><b>=(</b></p>',
+          isClosed: false
+        } as Ticket,
         {
           id: 4,
           title: 'Test ticket 2',
           assignee: 'danil',
           reporter: 'Cat',
-          description: '<p>I\'m Cat!</p><p><b>mrr</b></p>'
-        }
+          description: '<p>I\'m Cat!</p><p><b>mrr</b></p>',
+          isClosed: true
+        } as Ticket
       ]);
+    }
+
+    function getTicket(reqParams: HttpParams): Observable<HttpResponse<Ticket>> {
+      const ticketId = Number(reqParams.get('ticketId'));
+      if (!ticketId) {
+        return error('Ticket Id - required param');
+      }
+
+      switch (true) {
+        case ticketId === 1:
+          return ok<Ticket>({
+            id: 1,
+            title: 'Check this app',
+            assignee: 'danil',
+            reporter: 'Bob',
+            description: '<p>Hello world!</p><p><b>test</b></p>',
+            isClosed: false
+          } as Ticket);
+        case ticketId === 2:
+          return ok<Ticket>({
+            id: 2,
+            title: 'Problem user from USA',
+            assignee: 'Bob',
+            reporter: 'danil',
+            description: '<p>Problem with local ethernet!</p><p><b>=(</b></p>',
+            isClosed: true
+          } as Ticket);
+        case ticketId === 3:
+          return ok<Ticket>({
+            id: 3,
+            title: 'Test ticket 1',
+            assignee: 'Bob',
+            reporter: 'danil',
+            description: '<p>Problem with local ethernet!</p><p><b>=(</b></p>',
+            isClosed: false
+          } as Ticket);
+        case ticketId === 4:
+          return ok<Ticket>({
+            id: 4,
+            title: 'Test ticket 2',
+            assignee: 'danil',
+            reporter: 'Cat',
+            description: '<p>I\'m Cat!</p><p><b>mrr</b></p>',
+            isClosed: true
+          } as Ticket);
+      }
     }
 
     function createTicket(reqParams: HttpParams): Observable<HttpResponse<CreateResponse>> {
@@ -99,17 +152,21 @@ class FakeBackendInterceptor implements HttpInterceptor {
       });
     }
 
-    function closeTicket(): Observable<HttpResponse<any>> {
-      return ok();
+    function closeTicket(bodyResponse): Observable<HttpResponse<{ ticketId: string }>> {
+      return ok({
+        ticketId: bodyResponse.ticketId
+      });
     }
 
-    function deleteTicket(): Observable<HttpResponse<any>> {
-      return ok();
+    function deleteTicket(reqParams: HttpParams): Observable<HttpResponse<{ ticketId: string }>> {
+      return ok({
+        ticketId: reqParams.get('ticketId')
+      });
     }
 
     // helper functions
 
-    function ok(bodyResponse?): Observable<HttpResponse<any>> {
+    function ok<T>(bodyResponse?: T): Observable<HttpResponse<T>> {
       return of(new HttpResponse({ status: 200, body: bodyResponse }));
     }
 

@@ -22,6 +22,7 @@ export class AuthService {
     if (response) {
       localStorage.setItem('token', response.tokenId);
       localStorage.setItem('user-id', response.userId);
+      localStorage.setItem('is-admin', response.isAdmin);
     } else {
       localStorage.clear();
     }
@@ -41,6 +42,10 @@ export class AuthService {
 
   public isAuthenticated(): boolean {
     return !!this.token;
+  }
+
+  public isAdmin(): boolean {
+    return localStorage.getItem('is-admin') === 'true';
   }
 
   private handleError(error: HttpErrorResponse): Observable<any> {

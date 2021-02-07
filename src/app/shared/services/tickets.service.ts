@@ -18,6 +18,10 @@ export class TicketsService {
     private router: Router
   ) { }
 
+  public getTicket(reqTicketId: string): Observable<any> {
+    return this.http.get('/ticket', {params: {ticketId: reqTicketId}});
+  }
+
   public getAll(userId: string): Observable<Ticket[]> {
     if (!userId) {
       this.router.navigate(['/', 'login']);
@@ -31,7 +35,7 @@ export class TicketsService {
       );
   }
 
-  public create(ticket: Ticket): Observable<Ticket> {
+  public create(ticket: Ticket): Observable<any> {
     return this.http.post('/ticket', ticket)
       .pipe(map((response: CreateResponse) => {
          return {
@@ -41,6 +45,15 @@ export class TicketsService {
         },
         catchError(this.handleError.bind(this)))
       );
+  }
+
+  public delete(reqTicketId: string): Observable<{ ticketId: string }> {
+    return this.http.delete<{ ticketId: string }>('/ticket', {params: {ticketId: reqTicketId}});
+  }
+
+  public close(reqTicketId: string): Observable<{ ticketId: string }> {
+    const body = { ticketId: reqTicketId, isActionClose: true };
+    return this.http.put<{ ticketId: string }>('/ticket', body);
   }
 
   private handleError(error: HttpErrorResponse): Observable<any> {

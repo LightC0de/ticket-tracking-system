@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {Ticket} from '../../interfaces';
 
 @Component({
   selector: 'app-ticket',
@@ -6,10 +7,7 @@ import {Component, Input, OnInit} from '@angular/core';
   styleUrls: ['./ticket.component.scss']
 })
 export class TicketComponent implements OnInit {
-  @Input() id: string;
-  @Input() title: string;
-  @Input() reporter: string;
-  @Input() assignee: string;
+  @Input() ticket: Ticket;
 
   constructor() { }
 

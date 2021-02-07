@@ -4,10 +4,7 @@
 
     <ng-container *ngFor="let ticket of ticketsImAssignee">
       <app-ticket
-        [id]="ticket.id"
-        [title]="ticket.title"
-        [assignee]="ticket.assignee"
-        [reporter]="ticket.reporter"
+        [ticket]="ticket"
       ></app-ticket>
     </ng-container>
   </div>
@@ -17,10 +14,7 @@
 
     <ng-container *ngFor="let ticket of ticketsImReporter">
       <app-ticket
-        [id]="ticket.id"
-        [title]="ticket.title"
-        [assignee]="ticket.assignee"
-        [reporter]="ticket.reporter"
+        [ticket]="ticket"
       ></app-ticket>
     </ng-container>
   </div>

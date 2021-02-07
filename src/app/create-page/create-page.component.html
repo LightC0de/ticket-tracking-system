@@ -56,7 +56,12 @@
 
   <button
     type="submit"
-    class="btn btn-block btn-dark"
-    [disabled]="form.invalid"
+    class="btn btn-danger"
+    [disabled]="form.invalid || submitted"
   >Create ticket</button>
+  <button
+    [routerLink]="['/', 'dashboard']"
+    [disabled]="submitted"
+    class="btn btn-dark"
+  >Cancel</button>
 </form>
