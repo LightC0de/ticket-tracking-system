@@ -8,9 +8,14 @@ export interface AuthResponse {
   userId: string;
 }
 
+export interface CreateResponse {
+  ticketId: string;
+}
+
+
 export interface Ticket {
   id?: string;
   title: string;
-  responsiblePerson: string;
+  assignee: string;
   description: string;
 }

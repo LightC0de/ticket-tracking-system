@@ -1,13 +1,14 @@
-import {HTTP_INTERCEPTORS, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpEvent, HttpHandler, HttpInterceptor, HttpParams, HttpRequest, HttpResponse} from '@angular/common/http';
 import {Observable, of, throwError} from 'rxjs';
-import { Provider} from '@angular/core';
+import {Injectable, Provider} from '@angular/core';
 import {delay, dematerialize, materialize, mergeMap} from 'rxjs/operators';
-import {AuthResponse} from '../interfaces';
+import {AuthResponse, CreateResponse} from '../interfaces';
 
+@Injectable()
 class FakeBackendInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const { url, method, body } = request;
+    const { url, method, params, body } = request;
 
     // wrap in delayed observable to simulate server api call
     return of(null)
@@ -20,6 +21,14 @@ class FakeBackendInterceptor implements HttpInterceptor {
       switch (true) {
         case url.endsWith('/login') && method === 'POST':
           return authenticate();
+        case url.endsWith('/tickets') && method === 'GET':
+          return getTickets();
+        case url.endsWith('/ticket') && method === 'POST':
+          return createTicket(params);
+        case url.endsWith('/ticket') && method === 'PUT':
+          return closeTicket();
+        case url.endsWith('/ticket') && method === 'DELETE':
+          return deleteTicket();
         default:
           // pass through any requests not handled above
           return next.handle(request);
@@ -41,19 +50,46 @@ class FakeBackendInterceptor implements HttpInterceptor {
       });
     }
 
+    function getTickets(): Observable<HttpResponse<any>> {
+      return ok();
+    }
+
+    function createTicket(reqParams: HttpParams): Observable<HttpResponse<CreateResponse>> {
+      const isCorrectToken = reqParams.get('auth').toString() === 'fake-jwt-token';
+      if (!isCorrectToken) {
+        return unauthorized('Permission denied');
+      }
+
+      return ok({
+        ticketId: 'fake-ticket-id'
+      });
+    }
+
+    function closeTicket(): Observable<HttpResponse<any>> {
+      return ok();
+    }
+
+    function deleteTicket(): Observable<HttpResponse<any>> {
+      return ok();
+    }
+
     // helper functions
 
-    function ok(bodyResponse?): Observable<HttpResponse<AuthResponse>> {
+    function ok(bodyResponse?): Observable<HttpResponse<any>> {
       return of(new HttpResponse({ status: 200, body: bodyResponse }));
     }
 
-    function error(message): Observable<HttpResponse<AuthResponse>> {
+    function error(message): Observable<HttpResponse<any>> {
       return throwError({ error: { message } });
+    }
+
+    function unauthorized(message): Observable<HttpResponse<any>> {
+      return throwError({ error: { message }, status: 401 });
     }
   }
 }
 
-export const INTERCEPTOR_PROVIDER: Provider = {
+export const FAKE_BACKEND_INTERCEPTOR: Provider = {
   provide: HTTP_INTERCEPTORS,
   useClass: FakeBackendInterceptor,
   multi: true

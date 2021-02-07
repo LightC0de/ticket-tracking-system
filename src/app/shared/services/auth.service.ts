@@ -39,7 +39,7 @@ export class AuthService {
     AuthService.setToken(null);
   }
 
-  public iaAuthenticated(): boolean {
+  public isAuthenticated(): boolean {
     return !!this.token;
   }
 

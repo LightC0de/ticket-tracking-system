@@ -12,8 +12,9 @@ import { TicketComponent } from './shared/components/ticket/ticket.component';
 import { TicketPageComponent } from './ticket-page/ticket-page.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
-import {INTERCEPTOR_PROVIDER} from './shared/services/fake-backend.interceptor';
 import {QuillModule} from 'ngx-quill';
+import {AUTH_INTERCEPTOR} from './shared/services/auth.interceptor';
+import {FAKE_BACKEND_INTERCEPTOR} from './shared/services/fake-backend.interceptor';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,7 @@ import {QuillModule} from 'ngx-quill';
     HttpClientModule,
     QuillModule.forRoot()
   ],
-  providers: [INTERCEPTOR_PROVIDER],
+  providers: [AUTH_INTERCEPTOR, FAKE_BACKEND_INTERCEPTOR],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
