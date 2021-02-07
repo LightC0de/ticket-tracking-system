@@ -2,21 +2,29 @@
   <div class="tickets">
     <h2>Tickets, where I'm assignee</h2>
 
-    <ng-container *ngFor="let ticket of ticketsImAssignee">
-      <app-ticket
-        [ticket]="ticket"
-      ></app-ticket>
+    <ng-container *ngIf="ticketsImAssignee.length; else loading">
+      <ng-container *ngFor="let ticket of ticketsImAssignee">
+        <app-ticket
+          [ticket]="ticket"
+        ></app-ticket>
+      </ng-container>
     </ng-container>
   </div>
 
   <div class="tickets">
     <h2>Tickets, where I'm reporter</h2>
 
-    <ng-container *ngFor="let ticket of ticketsImReporter">
-      <app-ticket
-        [ticket]="ticket"
-      ></app-ticket>
+    <ng-container *ngIf="ticketsImReporter.length; else loading">
+      <ng-container *ngFor="let ticket of ticketsImReporter">
+        <app-ticket
+          [ticket]="ticket"
+        ></app-ticket>
+      </ng-container>
     </ng-container>
   </div>
 </div>
+
+<ng-template #loading>
+  <p class="text-center">loading date...</p>
+</ng-template>
 

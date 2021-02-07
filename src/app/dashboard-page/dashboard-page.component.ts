@@ -10,8 +10,8 @@ import {Subscription} from 'rxjs';
 })
 export class DashboardPageComponent implements OnInit, OnDestroy {
 
-  public ticketsImAssignee: Ticket[];
-  public ticketsImReporter: Ticket[];
+  public ticketsImAssignee: Ticket[] = [];
+  public ticketsImReporter: Ticket[] = [];
   private tSub: Subscription;
 
   constructor(

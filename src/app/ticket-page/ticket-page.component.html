@@ -1,34 +1,40 @@
-<div class="ticket">
-  <h1>{{title}}</h1>
+<ng-container *ngIf="title; else loading">
+  <div class="ticket">
+    <h1>{{title}}</h1>
 
-  <div class="info">
-    <strong>Reporter: {{reporter}}</strong>
-    <strong>Assignee: {{assignee}}</strong>
+    <div class="info">
+      <strong>Reporter: {{reporter}}</strong>
+      <strong>Assignee: {{assignee}}</strong>
+    </div>
+
+    <h3>Description:</h3>
+    <hr>
+    <div class="description" [innerHTML]="description"></div>
+
+    <div class="controls">
+      <button
+        (click)="close()"
+        class="btn btn-dark"
+        [disabled]="submitted"
+        *ngIf="!isClosed"
+      >Close ticket</button>
+      <button
+        (click)="close()"
+        class="btn btn-dark"
+        [disabled]="submitted"
+        *ngIf="isClosed"
+      >Re-open ticket</button>
+
+      <button
+        (click)="delete()"
+        class="btn btn-danger"
+        [disabled]="submitted"
+        *ngIf="isAdmin"
+      >Delete</button>
+    </div>
   </div>
+</ng-container>
 
-  <h3>Description:</h3>
-  <hr>
-  <div class="description" [innerHTML]="description"></div>
-
-  <div class="controls">
-    <button
-      (click)="close()"
-      class="btn btn-dark"
-      [disabled]="submitted"
-      *ngIf="!isClosed"
-    >Close ticket</button>
-    <button
-      (click)="close()"
-      class="btn btn-dark"
-      [disabled]="submitted"
-      *ngIf="isClosed"
-    >Re-open ticket</button>
-
-    <button
-      (click)="delete()"
-      class="btn btn-danger"
-      [disabled]="submitted"
-      *ngIf="isAdmin"
-    >Delete</button>
-  </div>
-</div>
+<ng-template #loading>
+  <p class="text-center">loading date...</p>
+</ng-template>
