@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {Ticket} from '../shared/interfaces';
+import {Ticket, User} from '../shared/interfaces';
 import {TicketsService} from '../shared/services/tickets.service';
 import {throwError} from 'rxjs';
+import {UsersService} from '../shared/services/users.service';
 
 @Component({
   selector: 'app-create-page',
@@ -13,8 +14,12 @@ export class CreatePageComponent implements OnInit {
 
   public form: FormGroup;
   public submitted: boolean;
+  public users: string[];
 
-  constructor(private ticketsService: TicketsService) { }
+  constructor(
+    private ticketsService: TicketsService,
+    private usersService: UsersService
+  ) { }
 
   ngOnInit(): void {
     this.submitted = false;
@@ -22,6 +27,9 @@ export class CreatePageComponent implements OnInit {
       title: new FormControl(null, Validators.required),
       assignee: new FormControl(null, Validators.required),
       description: new FormControl(null, Validators.required)
+    });
+    this.usersService.getAll().subscribe((response: User[]) => {
+      this.users = response.map(z => z.login);
     });
   }
 

@@ -2,7 +2,7 @@ import {HTTP_INTERCEPTORS, HttpEvent, HttpHandler, HttpInterceptor, HttpParams, 
 import {Observable, of, throwError} from 'rxjs';
 import {Injectable, Provider} from '@angular/core';
 import {delay, dematerialize, materialize, mergeMap} from 'rxjs/operators';
-import {AuthResponse, CreateResponse, Ticket} from '../interfaces';
+import {AuthResponse, CreateResponse, Ticket, User} from '../interfaces';
 
 @Injectable()
 class FakeBackendInterceptor implements HttpInterceptor {
@@ -23,6 +23,8 @@ class FakeBackendInterceptor implements HttpInterceptor {
           return authenticate();
         case url.endsWith('/tickets') && method === 'GET':
           return getTickets(params);
+        case url.endsWith('/users') && method === 'GET':
+          return getUsers();
         case url.endsWith('/ticket') && method === 'GET':
           return getTicket(params);
         case url.endsWith('/ticket') && method === 'POST':
@@ -51,6 +53,23 @@ class FakeBackendInterceptor implements HttpInterceptor {
         userId: 'danil',
         isAdmin: 'true'
       });
+    }
+
+    function getUsers(): Observable<HttpResponse<User[]>> {
+      return ok<User[]>([
+        {
+          login: 'danil',
+          password: '123123'
+        },
+        {
+          login: 'admin',
+          password: '123123'
+        },
+        {
+          login: 'Bob',
+          password: '123123'
+        }
+      ]);
     }
 
     function getTickets(reqParams: HttpParams): Observable<HttpResponse<Ticket[]>> {

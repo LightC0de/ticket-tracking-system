@@ -23,9 +23,8 @@
   >
     <label for="assignee">Assignee:</label>
     <select id="assignee" formControlName="assignee">
-      <option value="Danil">Danil</option>
-      <option value="Bob">Bob</option>
-      <option value="admin">admin</option>
+      <option value="" selected>Select user</option>
+      <option [value]="user" *ngFor="let user of users">{{user}}</option>
     </select>
 
     <div
