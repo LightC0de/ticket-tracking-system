@@ -12,6 +12,8 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
   public ticketsImAssignee: Ticket[] = [];
   public ticketsImReporter: Ticket[] = [];
+  public filter = 0;
+  public filter2 = 0;
   private tSub: Subscription;
 
   constructor(

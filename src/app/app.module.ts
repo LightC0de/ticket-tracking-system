@@ -15,6 +15,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {QuillModule} from 'ngx-quill';
 import {AUTH_INTERCEPTOR} from './shared/services/auth.interceptor';
 import {FAKE_BACKEND_INTERCEPTOR} from './shared/services/fake-backend.interceptor';
+import {FilterPipe} from './shared/filter.pipe';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import {FAKE_BACKEND_INTERCEPTOR} from './shared/services/fake-backend.intercept
     CreatePageComponent,
     EditPageComponent,
     TicketComponent,
-    TicketPageComponent
+    TicketPageComponent,
+    FilterPipe
   ],
   imports: [
     BrowserModule,

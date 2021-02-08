@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {Observable, Subject, throwError} from 'rxjs';
-import {CreateResponse, Ticket} from '../interfaces';
+import {CreateTicketResponse, Ticket} from '../interfaces';
 import {catchError, map} from 'rxjs/operators';
 import {Router} from '@angular/router';
 
@@ -37,7 +37,7 @@ export class TicketsService {
 
   public create(ticket: Ticket): Observable<any> {
     return this.http.post('/ticket', ticket)
-      .pipe(map((response: CreateResponse) => {
+      .pipe(map((response: CreateTicketResponse) => {
          return {
            ...ticket,
            id: response.ticketId

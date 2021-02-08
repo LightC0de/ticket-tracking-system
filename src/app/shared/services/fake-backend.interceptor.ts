@@ -2,7 +2,90 @@ import {HTTP_INTERCEPTORS, HttpEvent, HttpHandler, HttpInterceptor, HttpParams, 
 import {Observable, of, throwError} from 'rxjs';
 import {Injectable, Provider} from '@angular/core';
 import {delay, dematerialize, materialize, mergeMap} from 'rxjs/operators';
-import {AuthResponse, CreateResponse, Ticket, User} from '../interfaces';
+import {AuthResponse, CloseTicketResponse, CreateTicketResponse, DeleteTicketResponse, Ticket, User} from '../interfaces';
+
+class InMemoryData {
+  private static users: User[] = [
+    {
+      login: 'user1',
+      password: '123123',
+      isAdmin: false
+    },
+    {
+      login: 'user2',
+      password: '123123',
+      isAdmin: false
+    },
+    {
+      login: 'admin',
+      password: '123123',
+      isAdmin: true
+    }
+  ];
+
+  private static tickets: Ticket[] = [
+    {
+      id: 1,
+      title: 'Check this app',
+      assignee: 'admin',
+      reporter: 'user1',
+      description: '<p>Hello world!</p><p><b>test</b></p>',
+      isClosed: false
+    },
+    {
+      id: 2,
+      title: 'Problem user from USA',
+      assignee: 'user1',
+      reporter: 'admin',
+      description: '<p>Problem with local ethernet!</p><p><b>=(</b></p>',
+      isClosed: true
+    },
+    {
+      id: 3,
+      title: 'Test ticket 1',
+      assignee: 'user2',
+      reporter: 'admin',
+      description: '<p>Problem with local ethernet!</p><p><b>=(</b></p>',
+      isClosed: false
+    },
+    {
+      id: 4,
+      title: 'Test ticket 2',
+      assignee: 'admin',
+      reporter: 'user2',
+      description: '<p>I\'m Cat!</p><p><b>mrr</b></p>',
+      isClosed: true
+    }
+  ];
+
+  public static getUsers(): User[] {
+    return this.users;
+  }
+
+  public static getTickets(): Ticket[] {
+    return this.tickets;
+  }
+
+  public static getTicket(id: number): Ticket {
+    return this.tickets.find((ticket: Ticket) => {
+      return ticket.id === id;
+    });
+  }
+
+  public static isAdmin(login: string): boolean {
+    const reqUser: User = this.users.find((user: User) => {
+      return user.login === login;
+    });
+
+    return reqUser.isAdmin;
+  }
+
+  public static isCorrectCredentials(login: string, password: string): boolean {
+    return !!this.getUsers().filter((user: User) => {
+      return user.login === login && user.password === password;
+    }).length;
+  }
+}
 
 @Injectable()
 class FakeBackendInterceptor implements HttpInterceptor {
@@ -43,75 +126,34 @@ class FakeBackendInterceptor implements HttpInterceptor {
 
     function authenticate(): Observable<HttpResponse<AuthResponse>> {
       const { login, password } = body;
-      const isCorrectCredentials = login === 'admin' && password === '123123';
+      const isCorrectCredentials = InMemoryData.isCorrectCredentials(login, password);
 
       if (!isCorrectCredentials) {
         return error('Username or password is incorrect');
       }
-      return ok({
+
+      return ok<AuthResponse>({
         tokenId: 'fake-jwt-token',
-        userId: 'admin',
-        isAdmin: 'true'
+        userId: login,
+        isAdmin: InMemoryData.isAdmin(login)
       });
     }
 
     function getUsers(): Observable<HttpResponse<User[]>> {
-      return ok<User[]>([
-        {
-          login: 'danil',
-          password: '123123'
-        },
-        {
-          login: 'admin',
-          password: '123123'
-        },
-        {
-          login: 'Bob',
-          password: '123123'
-        }
-      ]);
+      return ok<User[]>(InMemoryData.getUsers());
     }
 
     function getTickets(reqParams: HttpParams): Observable<HttpResponse<Ticket[]>> {
-      const isCorrectUserId = reqParams.get('userId').toString() === 'admin';
-      if (!isCorrectUserId) {
-        return error('Incorrect user id');
+      const user: string = reqParams.get('userId').toString();
+      const resTickets = InMemoryData.getTickets().filter((ticket: Ticket) => {
+        return ticket.assignee === user || ticket.reporter === user;
+      });
+
+      if (!resTickets.length) {
+        return ok<Ticket[]>([]);
       }
 
-      return ok<Ticket[]>([
-        {
-          id: 1,
-          title: 'Check this app',
-          assignee: 'admin',
-          reporter: 'Bob',
-          description: '<p>Hello world!</p><p><b>test</b></p>',
-          isClosed: false
-        } as Ticket,
-        {
-          id: 2,
-          title: 'Problem user from USA',
-          assignee: 'Bob',
-          reporter: 'admin',
-          description: '<p>Problem with local ethernet!</p><p><b>=(</b></p>',
-          isClosed: true
-        } as Ticket,
-        {
-          id: 3,
-          title: 'Test ticket 1',
-          assignee: 'Bob',
-          reporter: 'admin',
-          description: '<p>Problem with local ethernet!</p><p><b>=(</b></p>',
-          isClosed: false
-        } as Ticket,
-        {
-          id: 4,
-          title: 'Test ticket 2',
-          assignee: 'admin',
-          reporter: 'Cat',
-          description: '<p>I\'m Cat!</p><p><b>mrr</b></p>',
-          isClosed: true
-        } as Ticket
-      ]);
+      return ok<Ticket[]>(resTickets);
     }
 
     function getTicket(reqParams: HttpParams): Observable<HttpResponse<Ticket>> {
@@ -120,78 +162,41 @@ class FakeBackendInterceptor implements HttpInterceptor {
         return error('Ticket Id - required param');
       }
 
-      switch (true) {
-        case ticketId === 1:
-          return ok<Ticket>({
-            id: 1,
-            title: 'Check this app',
-            assignee: 'admin',
-            reporter: 'Bob',
-            description: '<p>Hello world!</p><p><b>test</b></p>',
-            isClosed: false
-          } as Ticket);
-        case ticketId === 2:
-          return ok<Ticket>({
-            id: 2,
-            title: 'Problem user from USA',
-            assignee: 'Bob',
-            reporter: 'admin',
-            description: '<p>Problem with local ethernet!</p><p><b>=(</b></p>',
-            isClosed: true
-          } as Ticket);
-        case ticketId === 3:
-          return ok<Ticket>({
-            id: 3,
-            title: 'Test ticket 1',
-            assignee: 'Bob',
-            reporter: 'admin',
-            description: '<p>Problem with local ethernet!</p><p><b>=(</b></p>',
-            isClosed: false
-          } as Ticket);
-        case ticketId === 4:
-          return ok<Ticket>({
-            id: 4,
-            title: 'Test ticket 2',
-            assignee: 'admin',
-            reporter: 'Cat',
-            description: '<p>I\'m Cat!</p><p><b>mrr</b></p>',
-            isClosed: true
-          } as Ticket);
-      }
+      return ok<Ticket>(InMemoryData.getTicket(ticketId));
     }
 
-    function createTicket(reqParams: HttpParams, reqTicket: Ticket): Observable<HttpResponse<CreateResponse>> {
-      const reqUserId = reqParams.get('userId');
+    function createTicket(reqParams: HttpParams, reqTicket: Ticket): Observable<HttpResponse<CreateTicketResponse>> {
+      const userId = reqParams.get('userId');
 
       const isCorrectToken = reqParams.get('auth').toString() === 'fake-jwt-token';
       if (!isCorrectToken) {
         return unauthorized('Permission denied');
       }
 
-      return ok({
-        userId: reqUserId,
+      return ok<CreateTicketResponse>({
+        userId,
         ticketId: 'fake-ticket-id',
         newTicket: reqTicket
       });
     }
 
-    function closeTicket(bodyResponse): Observable<HttpResponse<{ ticketId: string }>> {
-      return ok({
+    function closeTicket(bodyResponse): Observable<HttpResponse<CloseTicketResponse>> {
+      return ok<CloseTicketResponse>({
         ticketId: bodyResponse.ticketId,
         isActionClose: bodyResponse.isActionClose,
         userId: bodyResponse.userId
       });
     }
 
-    function deleteTicket(reqParams: HttpParams): Observable<HttpResponse<{ ticketId: string }>> {
-      const userId = reqParams.get('userId');
+    function deleteTicket(reqParams: HttpParams): Observable<HttpResponse<DeleteTicketResponse>> {
+      const login = reqParams.get('userId');
 
-      if (userId !== 'admin') {
+      if (!InMemoryData.isAdmin(login)) {
         return unauthorized('Permission denied. You aren\'t admin');
       }
-      return ok({
+      return ok<DeleteTicketResponse>({
         ticketId: reqParams.get('ticketId'),
-        userId
+        userId: login
       });
     }
 

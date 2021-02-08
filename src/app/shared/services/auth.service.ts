@@ -20,9 +20,10 @@ export class AuthService {
 
   private static setToken(response: AuthResponse | null): void {
     if (response) {
+      localStorage.clear();
       localStorage.setItem('token', response.tokenId);
       localStorage.setItem('user-id', response.userId);
-      localStorage.setItem('is-admin', response.isAdmin);
+      localStorage.setItem('is-admin', response.isAdmin.toString());
     } else {
       localStorage.clear();
     }

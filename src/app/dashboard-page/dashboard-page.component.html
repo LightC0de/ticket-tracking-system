@@ -2,8 +2,12 @@
   <div class="tickets">
     <h2>Tickets, where I'm assignee</h2>
 
+    <button class="btn btn-info" [ngClass]="{'btn-danger':filter === 0}" (click)="filter = 0">All</button>
+    <button class="btn btn-info" [ngClass]="{'btn-danger':filter === 1}" (click)="filter = 1">Only closed</button>
+    <button class="btn btn-info" [ngClass]="{'btn-danger':filter === 2}" (click)="filter = 2">Only opened</button>
+
     <ng-container *ngIf="ticketsImAssignee.length; else loading">
-      <ng-container *ngFor="let ticket of ticketsImAssignee">
+      <ng-container *ngFor="let ticket of ticketsImAssignee | filterTickets:filter">
         <app-ticket
           [ticket]="ticket"
         ></app-ticket>
@@ -14,8 +18,12 @@
   <div class="tickets">
     <h2>Tickets, where I'm reporter</h2>
 
+    <button class="btn btn-info" [ngClass]="{'btn-danger':filter2 === 0}" (click)="filter2 = 0">All</button>
+    <button class="btn btn-info" [ngClass]="{'btn-danger':filter2 === 1}" (click)="filter2 = 1">Only closed</button>
+    <button class="btn btn-info" [ngClass]="{'btn-danger':filter2 === 2}" (click)="filter2 = 2">Only opened</button>
+
     <ng-container *ngIf="ticketsImReporter.length; else loading">
-      <ng-container *ngFor="let ticket of ticketsImReporter">
+      <ng-container *ngFor="let ticket of ticketsImReporter | filterTickets:filter2">
         <app-ticket
           [ticket]="ticket"
         ></app-ticket>
